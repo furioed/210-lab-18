@@ -25,19 +25,39 @@ void addTail(Node*& head, double rating, const string& comment) {
     if (!head) head = newNode;
     else {
         Node* curr = head;
-        while (curr->next) curr = curr->next;
+        while (curr->next) curr = curr->next; // go to last node
         curr->next = newNode;
     }
 }
 
-// Displays all reviews
+// Displays all reviews and average rating
 void display(Node* head) {
     cout << "\nOutputting all reviews:\n";
     int count = 0;
+    double total = 0.0;
     for (Node* curr = head; curr; curr = curr->next) {
         count++;
+        total += curr->rating;
         cout << "    > Review #" << count << ": " << curr->rating
              << ": " << curr->comment << endl;
+    }
+    if (count > 0)
+        cout << "    > Average: " << total / count << endl;
+}
+
+// Get a validated decimal rating between 0.0 and 5.0
+double getValidatedRating() {
+    double rating;
+    while (true) {
+        cout << "Enter review rating 0-5: ";
+        cin >> rating;
+        if (!cin.fail() && rating >= 0.0 && rating <= 5.0) {
+            cin.ignore();
+            return rating;
+        }
+        cout << "Invalid rating! Enter a value between 0.0 and 5.0.\n";
+        cin.clear();
+        cin.ignore(10000, '\n');
     }
 }
 
@@ -56,12 +76,9 @@ int main() {
 
     // User input starts here
     while (tolower(again) == 'y') {
-        double rating;
+        double rating = getValidatedRating();
         string comment;
 
-        cout << "Enter review rating 0-5: ";
-        cin >> rating;
-        cin.ignore();
         cout << "Enter review comments: ";
         getline(cin, comment);
 
